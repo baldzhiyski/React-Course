@@ -70,17 +70,23 @@ function Footer() {
   return (
     <footer className="footer">
       {isOpen ? (
-        <div className="order">
-          <p>
-            {new Date().toLocaleTimeString()} We're open until {closeHour}:00.
-            Come visit us or order online !
-          </p>
-          <button className="btn">Order</button>
-        </div>
+        <Order closeHour={closeHour} />
       ) : (
         <p>We are currently closed !</p>
       )}
     </footer>
+  );
+}
+
+function Order({ closeHour }) {
+  return (
+    <div className="order">
+      <p>
+        {new Date().toLocaleTimeString()} We're open until {closeHour}:00. Come
+        visit us or order online !
+      </p>
+      <button className="btn">Order</button>
+    </div>
   );
 }
 
@@ -110,6 +116,8 @@ function Menu() {
 }
 
 function Pizza(props) {
+  if (props.soldOut) return null;
+
   return (
     <li className="pizza">
       <img src={props.photoName} alt={props.name} />
