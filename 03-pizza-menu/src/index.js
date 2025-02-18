@@ -65,18 +65,20 @@ function Footer() {
   const hour = new Date().getHours();
   const openHour = 12;
   const closeHour = 22;
-  const isOpen = hour >= openHour && hour <= closeHour;
+  const isOpen = true;
 
   return (
     <footer className="footer">
-      {isOpen && (
+      {isOpen ? (
         <div className="order">
           <p>
             {new Date().toLocaleTimeString()} We're open until {closeHour}:00.
             Come visit us or order online !
           </p>
-          <button className="btn"></button>
+          <button className="btn">Order</button>
         </div>
+      ) : (
+        <p>We are currently closed !</p>
       )}
     </footer>
   );
@@ -87,7 +89,7 @@ function Menu() {
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      {pizzasNum > 0 && (
+      {pizzasNum > 0 ? (
         <ul className="pizzas">
           {pizzaData.map((pizza) => (
             <Pizza
@@ -100,6 +102,8 @@ function Menu() {
             />
           ))}
         </ul>
+      ) : (
+        <p>We are still working on our menu ! Please come later</p>
       )}
     </main>
   );
