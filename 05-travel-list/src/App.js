@@ -1,9 +1,6 @@
 import { useState } from "react";
 import "./index.css";
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: true },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-];
+
 export default function App() {
   const [items, setItems] = useState([]);
   // Add item in immutable way
@@ -15,11 +12,22 @@ export default function App() {
     setItems((items) => items.filter((el) => el.id !== id));
   }
 
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onDeleteItem={handleDeleteItem} />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItem}
+        onUpdateItem={handleToggleItem}
+      />
       <Stats />
     </div>
   );
@@ -67,21 +75,31 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onDeleteItem }) {
+function PackingList({ items, onDeleteItem, onUpdateItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((el) => (
-          <Item item={el} key={el.id} onDeleteItem={onDeleteItem} />
+          <Item
+            item={el}
+            key={el.id}
+            onDeleteItem={onDeleteItem}
+            onUpdateItem={onUpdateItem}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onUpdateItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onUpdateItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
