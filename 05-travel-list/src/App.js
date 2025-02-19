@@ -12,6 +12,16 @@ export default function App() {
     setItems((items) => items.filter((el) => el.id !== id));
   }
 
+  function handleDeleteAllItems() {
+    const confirmed = window.confirm(
+      "Are u sure you want to delete all items ? "
+    );
+
+    if (confirmed) {
+      setItems([]);
+    }
+  }
+
   function handleToggleItem(id) {
     setItems((items) =>
       items.map((item) =>
@@ -27,6 +37,7 @@ export default function App() {
         items={items}
         onDeleteItem={handleDeleteItem}
         onUpdateItem={handleToggleItem}
+        onDeleteAllItems={handleDeleteAllItems}
       />
       <Stats items={items} />
     </div>
@@ -75,7 +86,7 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onDeleteItem, onUpdateItem }) {
+function PackingList({ items, onDeleteItem, onUpdateItem, onDeleteAllItems }) {
   const [sortBy, setSortBy] = useState("input");
   let sortedItems;
 
@@ -112,6 +123,8 @@ function PackingList({ items, onDeleteItem, onUpdateItem }) {
           <option value="description">Sort by description</option>
           <option value="packed">Sort by packed status</option>
         </select>
+
+        <button onClick={onDeleteAllItems}>Clear list</button>
       </div>
     </div>
   );
