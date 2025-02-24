@@ -7,33 +7,14 @@ function Main({ children }) {
   return <main className="main">{children}</main>;
 }
 
-function ListBox({ children }) {
-  const [isOpen1, setIsOpen1] = useState(true);
+function Box({ children }) {
+  const [isOpen, setisOpen] = useState(true);
   return (
     <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen1((open) => !open)}
-      >
-        {isOpen1 ? "–" : "+"}
+      <button className="btn-toggle" onClick={() => setisOpen((open) => !open)}>
+        {isOpen ? "–" : "+"}
       </button>
-      {isOpen1 && children}
-    </div>
-  );
-}
-
-function WatchedMovies({ children }) {
-  const [isOpen2, setIsOpen2] = useState(true);
-
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen2((open) => !open)}
-      >
-        {isOpen2 ? "–" : "+"}
-      </button>
-      {isOpen2 && children}
+      {isOpen && children}
     </div>
   );
 }
@@ -43,7 +24,7 @@ function WatchedSummary({ watched }) {
   const avgUserRating = average(watched.map((movie) => movie.userRating));
   const avgRuntime = average(watched.map((movie) => movie.runtime));
   return (
-    <>
+    <div className="summary">
       <h2>Movies you watched</h2>
       <div>
         <p>
@@ -63,17 +44,17 @@ function WatchedSummary({ watched }) {
           <span>{avgRuntime} min</span>
         </p>
       </div>
-    </>
+    </div>
   );
 }
 
 function WatchedList({ watched }) {
   return (
-    <>
+    <ul className="list">
       {watched.map((movie) => (
         <WatchedMovieElement movie={movie} key={movie.Title} />
       ))}
-    </>
+    </ul>
   );
 }
 
@@ -125,4 +106,4 @@ function Movie({ movie }) {
   );
 }
 // Export all components using named exports
-export { ListBox, Main, WatchedMovies, MovieList, WatchedSummary, WatchedList };
+export { Box, Main, MovieList, WatchedSummary, WatchedList };
