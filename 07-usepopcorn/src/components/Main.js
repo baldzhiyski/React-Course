@@ -3,16 +3,11 @@ import { useState } from "react";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-export default function Main({ watched, movies, setMovies, setWatched }) {
-  return (
-    <main className="main">
-      <ListBox movies={movies} setMovies={setMovies} />
-      <WatchedMovies watched={watched} setWatched={setMovies} />
-    </main>
-  );
+function Main({ children }) {
+  return <main className="main">{children}</main>;
 }
 
-function ListBox({ movies, setMovies }) {
+function ListBox({ children }) {
   const [isOpen1, setIsOpen1] = useState(true);
   return (
     <div className="box">
@@ -22,12 +17,12 @@ function ListBox({ movies, setMovies }) {
       >
         {isOpen1 ? "–" : "+"}
       </button>
-      {isOpen1 && <MovieList movies={movies} />}
+      {isOpen1 && children}
     </div>
   );
 }
 
-function WatchedMovies({ watched, setWatched }) {
+function WatchedMovies({ children }) {
   const [isOpen2, setIsOpen2] = useState(true);
 
   return (
@@ -38,17 +33,7 @@ function WatchedMovies({ watched, setWatched }) {
       >
         {isOpen2 ? "–" : "+"}
       </button>
-      {isOpen2 && (
-        <>
-          <div className="summary">
-            <WatchedSummary watched={watched} />
-          </div>
-
-          <ul className="list">
-            <WatchedList watched={watched} />
-          </ul>
-        </>
-      )}
+      {isOpen2 && children}
     </div>
   );
 }
@@ -139,3 +124,5 @@ function Movie({ movie }) {
     </li>
   );
 }
+// Export all components using named exports
+export { ListBox, Main, WatchedMovies, MovieList, WatchedSummary, WatchedList };

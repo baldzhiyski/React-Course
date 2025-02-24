@@ -1,13 +1,7 @@
 import { useState } from "react";
 
-export default function Navbar({ movies }) {
-  return (
-    <nav className="nav-bar">
-      <Logo />
-      <Search />
-      <NumResults movies={movies} />
-    </nav>
-  );
+function Navbar({ children }) {
+  return <nav className="nav-bar">{children}</nav>;
 }
 
 function Search() {
@@ -39,3 +33,6 @@ function NumResults({ movies }) {
     </p>
   );
 }
+
+// Export all components at once
+export { Navbar, Search, Logo, NumResults };
