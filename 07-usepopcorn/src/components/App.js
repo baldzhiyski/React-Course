@@ -3,64 +3,39 @@ import { Navbar, Search, Logo, NumResults } from "./Navbar";
 import { Box, Main, MovieList, WatchedList, WatchedSummary } from "./Main";
 import { Loader } from "./Loader";
 import { ErrorMessage } from "./ErrorMessage";
-
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
-
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
-];
+import { SelectedMovie } from "./Main";
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [query, setQuery] = useState("batman"); // default search
   const [isLoading, setIsLoading] = useState(false);
-  const KEY = "3685d5d5";
+  const KEY = process.env.REACT_APP_OMDB_API_KEY;
+
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+
+  function handleDisplayMovieDetails(movieId) {
+    setSelectedId((selectedId) => (selectedId === movieId ? null : movieId));
+  }
+
+  function handleDeleteWatched(id) {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  }
+
+  function handleAddToWatched(movie) {
+    const alreadyWatched = watched.some((m) => m.imdbID === movie.imdbID);
+    if (!alreadyWatched) {
+      setWatched((prev) => [...prev, movie]);
+    }
+  }
+
+  function onCloseMovie() {
+    setSelectedId("");
+  }
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchAllMovies() {
       try {
         setError(""); // clear any previous errors
         setIsLoading(true);
@@ -94,7 +69,7 @@ export default function App() {
       return;
     }
 
-    fetchData();
+    fetchAllMovies();
   }, [query]); // Run the effect after the initial render and re-run it only when any of the listed dependencies change.
   return (
     <>
@@ -107,12 +82,33 @@ export default function App() {
       <Main>
         <Box>
           {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList
+              movies={movies}
+              displayDetails={handleDisplayMovieDetails}
+            />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedList watched={watched} />
+          {selectedId ? (
+            <SelectedMovie
+              selectedId={selectedId}
+              isLoading={isLoading}
+              onCloseMovie={onCloseMovie}
+              watched={watched}
+              onAddWatched={handleAddToWatched}
+              KEY={KEY}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedList
+                watched={watched}
+                handleDeleteWatched={handleDeleteWatched}
+              />
+            </>
+          )}
         </Box>
       </Main>
     </>
