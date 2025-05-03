@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navbar, Search, Logo, NumResults } from "./Navbar";
 import { Box, Main, MovieList, WatchedList, WatchedSummary } from "./Main";
 import { Loader } from "./Loader";
+import { ErrorMessage } from "./ErrorMessage";
 
 const tempMovieData = [
   {
@@ -51,25 +52,50 @@ const tempWatchedData = [
 ];
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
   const [query, setQuery] = useState("batman"); // default search
   const [isLoading, setIsLoading] = useState(false);
   const KEY = "3685d5d5";
+  const [error, setError] = useState("");
+
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
-      const response = await fetch(
-        `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-      );
-      const data = await response.json();
-      setMovies(data.Search || []);
-      setIsLoading(false);
+      try {
+        setError(""); // clear any previous errors
+        setIsLoading(true);
+
+        const response = await fetch(
+          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+
+        if (data.Response === "False") {
+          throw new Error("Movie not found");
+        }
+
+        setMovies(data.Search || []);
+      } catch (err) {
+        setError(err.message);
+        setMovies([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    if (query.length > 2) fetchData();
-  }, [query]); // fetch when query changes
+    if (query.length < 3) {
+      setMovies([]);
+      setError("");
+      return;
+    }
 
+    fetchData();
+  }, [query]); // Run the effect after the initial render and re-run it only when any of the listed dependencies change.
   return (
     <>
       <Navbar>
@@ -79,7 +105,11 @@ export default function App() {
       </Navbar>
 
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
+        </Box>
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedList watched={watched} />
