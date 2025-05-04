@@ -35,13 +35,16 @@ export default function App() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchAllMovies() {
       try {
         setError(""); // clear any previous errors
         setIsLoading(true);
 
         const response = await fetch(
-          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         );
 
         if (!response.ok) {
@@ -55,8 +58,11 @@ export default function App() {
         }
 
         setMovies(data.Search || []);
+        setError("");
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
         setMovies([]);
       } finally {
         setIsLoading(false);
@@ -70,6 +76,11 @@ export default function App() {
     }
 
     fetchAllMovies();
+
+    // Clean up function
+    return function () {
+      controller.abort();
+    };
   }, [query]); // Run the effect after the initial render and re-run it only when any of the listed dependencies change.
   return (
     <>
