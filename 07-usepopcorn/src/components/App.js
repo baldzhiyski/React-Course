@@ -7,7 +7,9 @@ import { SelectedMovie } from "./Main";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    return JSON.parse(localStorage.getItem("watched"));
+  });
   const [query, setQuery] = useState("batman"); // default search
   const [isLoading, setIsLoading] = useState(false);
   const KEY = process.env.REACT_APP_OMDB_API_KEY;
@@ -33,6 +35,13 @@ export default function App() {
   function onCloseMovie() {
     setSelectedId("");
   }
+
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   useEffect(() => {
     const controller = new AbortController();

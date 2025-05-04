@@ -41,7 +41,7 @@ export default function StarRating({
   function handleRating(rating) {
     setRating(rating);
     if (onSetRating) {
-      onSetRating(rating + 1);
+      onSetRating(rating);
     }
   }
 
