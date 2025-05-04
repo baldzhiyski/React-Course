@@ -7,20 +7,23 @@ function Navbar({ children }) {
 function Search({ query, setQuery }) {
   const inputEl = useRef(null);
 
-  useEffect(function () {
-    function callBack(e) {
-      if (document.activeElement === inputEl.current) return;
+  useEffect(
+    function () {
+      function callBack(e) {
+        if (document.activeElement === inputEl.current) return;
 
-      if (e.code === "Enter") {
-        inputEl.current.focus();
-        setQuery("");
+        if (e.code === "Enter") {
+          inputEl.current.focus();
+          setQuery("");
+        }
       }
-    }
 
-    document.addEventListener("keydown", callBack);
+      document.addEventListener("keydown", callBack);
 
-    return () => document.addEventListener("keydown", callBack); // ✅
-  }, []);
+      return () => document.addEventListener("keydown", callBack); // ✅
+    },
+    [setQuery]
+  );
 
   return (
     <input
