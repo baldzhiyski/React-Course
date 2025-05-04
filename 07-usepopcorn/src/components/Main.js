@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "./Loader";
 import StarRating from "./StarRating";
+import { useKey } from "../hooks/useKey";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -119,6 +120,8 @@ function SelectedMovie({
 
   const countRef = useRef(0);
 
+  useKey("Escape", onCloseMovie);
+
   useEffect(
     function () {
       if (userRating) countRef.current++;
@@ -194,19 +197,6 @@ function SelectedMovie({
     },
     [title] // Dependency: run effect whenever `title` changes
   );
-  useEffect(() => {
-    function callBack(e) {
-      if (e.code === "Escape") {
-        onCloseMovie();
-      }
-    }
-
-    document.addEventListener("keydown", callBack);
-
-    return () => {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, [onCloseMovie]);
 
   return (
     <div className="details">
