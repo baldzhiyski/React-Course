@@ -144,18 +144,6 @@ function SelectedMovie({
     Genre: genre,
   } = movie;
 
-  // if (imdbRating > 8) return <p>Greatest ever!</p>;
-  // if (imdbRating > 8) [isTop, setIsTop] = useState(true);
-
-  // const [isTop, setIsTop] = useState(imdbRating > 8);
-  // console.log(isTop);
-  // useEffect(
-  //   function () {
-  //     setIsTop(imdbRating > 8);
-  //   },
-  //   [imdbRating]
-  // );
-
   const isTop = imdbRating > 8;
   console.log(isTop);
 
@@ -211,6 +199,19 @@ function SelectedMovie({
     },
     [title] // Dependency: run effect whenever `title` changes
   );
+  useEffect(() => {
+    function callBack(e) {
+      if (e.code === "Escape") {
+        onCloseMovie();
+      }
+    }
+
+    document.addEventListener("keydown", callBack);
+
+    return () => {
+      document.removeEventListener("keydown", callBack);
+    };
+  }, [onCloseMovie]);
 
   return (
     <div className="details">

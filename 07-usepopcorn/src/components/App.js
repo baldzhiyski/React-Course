@@ -75,13 +75,15 @@ export default function App() {
       return;
     }
 
+    onCloseMovie();
     fetchAllMovies();
 
     // Clean up function
     return function () {
       controller.abort();
     };
-  }, [query]); // Run the effect after the initial render and re-run it only when any of the listed dependencies change.
+  }, [KEY, query]); // Run the effect after the initial render and re-run it only when any of the listed dependencies change.
+
   return (
     <>
       <Navbar>
