@@ -6,6 +6,8 @@ import { useEffect, useReducer } from "react";
 import StartScreen from "./components/StartScreen";
 import Question from "./components/Question";
 import NextButton from "./components/NextButton";
+import Progress from "./components/Progress";
+import FinishScreen from "./components/FinishScreen";
 function App() {
   const initialState = {
     questions: [],
@@ -13,6 +15,7 @@ function App() {
     index: 0,
     answer: null,
     points: 0,
+    highScore: 0,
   };
 
   function reducer(state, action) {
@@ -40,16 +43,33 @@ function App() {
       case "nextQuestion":
         return { ...state, index: state.index + 1, answer: null };
 
+      case "finish":
+        return {
+          ...state,
+          status: "finished",
+          highScore:
+            state.points > state.highScore ? state.points : state.highScore,
+        };
+
+      case "reset":
+        return {
+          ...initialState,
+          questions: state.questions,
+          status: "ready",
+        };
+
       default:
         throw new Error("Unexpected acton type !");
     }
   }
 
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ questions, status, index, answer, points, highScore }, dispatch] =
+    useReducer(reducer, initialState);
 
+  const maxPoints = (questions || []).reduce(
+    (prev, cur) => prev + cur.points,
+    0
+  );
   const numQuestions = questions.length;
 
   useEffect(function () {
@@ -80,13 +100,33 @@ function App() {
         )}
         {status === "active" && (
           <>
+            <Progress
+              index={index}
+              numQuestions={numQuestions}
+              points={points}
+              allPoints={maxPoints}
+              answer={answer}
+            />
             <Question
               question={questions[index]}
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              numQuestions={numQuestions}
+            />
           </>
+        )}
+        {status === "finished" && (
+          <FinishScreen
+            maxPossiblePoints={maxPoints}
+            points={points}
+            highScore={highScore}
+            dispatch={dispatch}
+          />
         )}
       </Main>
     </div>
