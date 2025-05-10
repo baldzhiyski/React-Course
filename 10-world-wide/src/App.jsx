@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import Product from './pages/Product';
@@ -41,6 +41,7 @@ function App() {
         <Route path="product" element={<Product />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="app" element={<AppLayout />}>
+          <Route index element={<Navigate to="cities" />} />
           <Route
             index
             path="cities"
