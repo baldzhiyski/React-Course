@@ -22,6 +22,7 @@
 
 .flag {
   position: absolute;
+  color: black;
   right: 1rem;
   top: 2.7rem;
   font-size: 2.8rem;
