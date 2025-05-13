@@ -1,30 +1,6 @@
 {
   "cities": [
     {
-      "cityName": "Lisbon",
-      "country": "Portugal",
-      "emoji": "🇵🇹",
-      "date": "2027-10-31T15:59:59.138Z",
-      "notes": "My favorite city so far!",
-      "position": {
-        "lat": 38.727881642324164,
-        "lng": -9.140900099907554
-      },
-      "id": "73930385"
-    },
-    {
-      "cityName": "Madrid",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2027-07-15T08:22:53.976Z",
-      "notes": "",
-      "position": {
-        "lat": 40.46635901755316,
-        "lng": -3.7133789062500004
-      },
-      "id": "17806751"
-    },
-    {
       "cityName": "Berlin",
       "country": "Germany",
       "emoji": "🇩🇪",
@@ -35,42 +11,6 @@
         "lng": 13.376933665713324
       },
       "id": "98443197"
-    },
-    {
-      "id": "77cd",
-      "cityName": "Boalo",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2025-05-13T05:58:09.510Z",
-      "notes": "",
-      "position": {
-        "lat": "40.69127435621697",
-        "lng": "-3.9434050391122026"
-      }
-    },
-    {
-      "id": "d598",
-      "cityName": "l'Alcora",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2025-05-13T06:00:29.502Z",
-      "notes": "",
-      "position": {
-        "lat": "40.05537171987221",
-        "lng": "-0.1892581954863304"
-      }
-    },
-    {
-      "id": "2744",
-      "cityName": "Paris",
-      "country": "France",
-      "emoji": "🇫🇷",
-      "date": "2025-05-13T06:00:45.571Z",
-      "notes": "My fav town",
-      "position": {
-        "lat": "48.84138052452932",
-        "lng": "2.359801480801114"
-      }
     },
     {
       "id": "0e58",
