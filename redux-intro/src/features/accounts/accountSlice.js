@@ -2,6 +2,7 @@ const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
+  isLoading: false,
 };
 
 export default function accountReducer(state = initialStateAccount, action) {
@@ -10,6 +11,7 @@ export default function accountReducer(state = initialStateAccount, action) {
       return {
         ...state,
         balance: state.balance + action.payload,
+        isLoading: false,
       };
     case "account/withdraw":
       return {
@@ -34,15 +36,63 @@ export default function accountReducer(state = initialStateAccount, action) {
         loanPurpose: "",
       };
 
+    case "account/convertingCurrency":
+      return {
+        ...state,
+        isLoading: true,
+      };
+
     default:
       return state;
   }
 }
 
-export function deposit(amount) {
-  return {
-    type: "account/deposit",
-    payload: amount,
+// features/accounts/accountActions.js
+
+// 1️⃣ This is our action creator.
+//    Depending on the currency it either returns a plain action
+//    (synchronous path) or a thunk function (asynchronous path).
+export function deposit(amount, currency) {
+  // ——— Sync path ———
+  if (currency === "USD") {
+    // When currency is already USD, we just return a plain object.
+    // The component’s dispatch(deposit(...)) will be the *only* dispatch,
+    // and that action goes straight to the reducers.
+    return {
+      type: "account/deposit",
+      payload: amount,
+    };
+  }
+
+  // ——— Async (thunk) path ———
+  // By returning a function, we hand control to redux-thunk middleware
+  // instead of going straight to the reducers.
+  return async function (dispatch, getState) {
+    dispatch({ type: "account/convertingCurrency" });
+
+    // ⚙️ First “dispatch”: this is actually the component’s call
+    //    dispatch(deposit(amount, currency))—redux-thunk intercepts
+    //    it because the “action” is a function.
+    //
+    //    thunk middleware sees “action” is a function and does:
+    //      action(dispatch, getState)
+    //
+    //    So you end up inside this function.
+
+    // 2️⃣ Do your external API call to convert to USD
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await res.json();
+    const converted = data.rates.USD;
+
+    // 3️⃣ Second dispatch: now that we've got the converted amount,
+    //    we dispatch a *plain action object* to actually update state.
+    //    This is the one that hits your reducers.
+    dispatch({
+      type: "account/deposit",
+      payload: converted,
+    });
   };
 }
 export function requestLoan(amount, purpose) {
