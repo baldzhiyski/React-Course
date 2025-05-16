@@ -1,35 +1,12 @@
-const initialState = {
-  balance: 0,
-  loan: 0,
-  loanPurpose: "",
-};
+import { createStore, combineReducers } from "redux";
+import accountReducer from "./features/accounts/accountSlice";
+import customerReducer from "./features/customers/customerSlice";
 
-function reducer(state = initialState, action) {
-  switch (action.type) {
-    case "account/deposit":
-      return {
-        ...state,
-        balance: state.balance + action.payload,
-      };
-    case "account/withdraw":
-      return {
-        ...state,
-        balance: state.balance - action.payload,
-      };
+const rootReducer = combineReducers({
+  customer: customerReducer,
+  account: accountReducer,
+});
 
-    case "account/requestLoan":
-      if (state.loan > 0) return state;
-      return { ...state, loan: action.payload };
+const store = createStore(rootReducer);
 
-    case "account/payLoan":
-      return {
-        ...state,
-        balance: state.balance - state.loan,
-        loan: 0,
-        loanPurpose: "",
-      };
-
-    default:
-      return state;
-  }
-}
+export default store;
