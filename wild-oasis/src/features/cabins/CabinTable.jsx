@@ -10,7 +10,7 @@ function CabinTable() {
   const { isLoading, cabins } = useCabins();
   const [searchParams] = useSearchParams();
 
-  if (!cabins.length) return <Empty resource="cabins" />;
+  if (!cabins?.length) return <Empty resource="cabins" />;
 
   if (isLoading) return <Spinner />;
 
