@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import styled, { css } from "styled-components";
-import { useSearchParams } from 'react-router-dom';
-
+import { useSearchParams } from "react-router-dom";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -37,27 +36,33 @@ const FilterButton = styled.button`
   }
 `;
 
+function Filter({ filterField, options }) {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-function Filter({filterField,options}) {
+  const currentFilter = searchParams.get(filterField) || options[0].value;
 
-  const [searchParams,setSearchParams] = useSearchParams();
+  function handleClick(value) {
+    searchParams.set(filterField, value);
 
-  const currentFilter = searchParams.get(filterField) || options[0].value
+    if (searchParams.get("page")) searchParams.set("page", 1);
 
-  function handleClick(value){
-    searchParams.set(filterField,value)
-    setSearchParams(searchParams)
-  
+    setSearchParams(searchParams);
   }
 
   return (
     <StyledFilter>
-      {options.map(option=> 
-      <FilterButton disabled={option.value === currentFilter} active={option.value === currentFilter} key={option.value} onClick={()=> handleClick(option.value)}
-      >{option.label}</FilterButton> )}
-  
+      {options.map((option) => (
+        <FilterButton
+          disabled={option.value === currentFilter}
+          active={option.value === currentFilter}
+          key={option.value}
+          onClick={() => handleClick(option.value)}
+        >
+          {option.label}
+        </FilterButton>
+      ))}
     </StyledFilter>
-  )
+  );
 }
 
-export default Filter
+export default Filter;
