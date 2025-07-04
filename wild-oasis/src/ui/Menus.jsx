@@ -98,6 +98,7 @@ function Toggle({ id }) {
 
   function handleClick(e) {
     // Calculate position relative to viewport for portal placement
+    e.stopPropagation();
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x, // distance from right edge
